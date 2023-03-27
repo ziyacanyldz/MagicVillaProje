@@ -4,15 +4,15 @@ using Microsoft.AspNetCore.Mvc;
 namespace MagicVillaApı.Controllers
 {
     [ApiController]
-    [Route("api/VillaApi")]
+    [Route("api/[controller]")]
     public class VillaAPIController : ControllerBase
     {
         [HttpGet]
-        public IEnumerable<Villa> GetVillas()
+        public IEnumerable<VillaDTO> GetVillas()
         {
-            return new List<Villa> {
-            new Villa{Id=1,Name="Pool View" },
-            new Villa{Id=2,Name="Beach View" }
+            return new List<VillaDTO> {
+            new VillaDTO{Id=1,Name="Pool View" },
+            new VillaDTO{Id=2,Name="Beach View" }
             };
         }
     }
