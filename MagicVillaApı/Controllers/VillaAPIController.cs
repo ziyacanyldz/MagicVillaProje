@@ -47,10 +47,28 @@ namespace MagicVillaApı.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
+            if (villaDTO == null)
+            {
+                return BadRequest(villaDTO);
+            }
+            if (villaDTO.Id > 0)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            // Validation!
+            if (VillaStore.villaList.FirstOrDefault(u => u.Name.ToLower() == villaDTO.Name.ToLower()) != null)
+            {
+                ModelState.AddModelError("CustomError", "Villa already Exists!");
+                return BadRequest(ModelState);
+            }
+
             villaDTO.Id = VillaStore.villaList.OrderByDescending(u => u.Id).FirstOrDefault().Id + 1;
             VillaStore.villaList.Add(villaDTO);
 
+
             return CreatedAtRoute("GetVilla", new { id = villaDTO.Id }, villaDTO);
+
             //return Ok(villaDTO);
         }
     }
