@@ -1,5 +1,6 @@
 ﻿using MagicVillaApı.Models;
 using MagicVillaAPI.Data;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MagicVillaApı.Controllers
@@ -8,9 +9,17 @@ namespace MagicVillaApı.Controllers
     [Route("api/[controller]")]
     public class VillaAPIController : ControllerBase
     {
+        private ILogger<VillaAPIController> _logger;
+
+        public VillaAPIController(ILogger<VillaAPIController> logger)
+        {
+            _logger = logger;
+        }
+
         [HttpGet]
         public ActionResult<IEnumerable<VillaDTO>> GetVillas()
         {
+            _logger.LogInformation("Get villas requested");
             return Ok(VillaStore.villaList);
         }
 
@@ -110,6 +119,28 @@ namespace MagicVillaApı.Controllers
 
             return NoContent();
 
+        }
+
+        [HttpPatch("{id:int}", Name = "UpdatePartialVilla")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult UpdatePartialVilla(int id, JsonPatchDocument<VillaDTO> patchDTO)
+        {
+            if (patchDTO == null || id == 0)
+            {
+                return BadRequest();
+            }
+            var villa = VillaStore.villaList.FirstOrDefault(u => u.Id == id);
+            if (villa == null)
+            {
+                return BadRequest();
+            }
+            patchDTO.ApplyTo(villa, ModelState);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            return NoContent();
         }
     }
 }
