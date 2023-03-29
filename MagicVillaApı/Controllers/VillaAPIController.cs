@@ -1,4 +1,6 @@
-﻿using MagicVillaApı.Models;
+﻿
+using MagicVillaApı.Models;
+
 using MagicVillaAPI.Data;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -9,17 +11,19 @@ namespace MagicVillaApı.Controllers
     [Route("api/[controller]")]
     public class VillaAPIController : ControllerBase
     {
-        private ILogger<VillaAPIController> _logger;
+    
 
-        public VillaAPIController(ILogger<VillaAPIController> logger)
+        public VillaAPIController()
         {
-            _logger = logger;
+           
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<VillaDTO>> GetVillas()
         {
-            _logger.LogInformation("Get villas requested");
+
+            //_logger.Log("Get villas requested! 2. kez");
+
             return Ok(VillaStore.villaList);
         }
 
@@ -28,6 +32,7 @@ namespace MagicVillaApı.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<VillaDTO> GetVilla(int id)
         {
+    
             if (id == 0)
             {
                 return BadRequest();
